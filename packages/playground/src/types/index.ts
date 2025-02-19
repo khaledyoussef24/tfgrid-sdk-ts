@@ -58,6 +58,7 @@ export interface FarmingProfileOptions {
   nuRequiredPerCu: number;
 }
 export interface K8SWorker {
+  _id: number;
   name: string;
   cpu: number;
   memory: number;
@@ -75,6 +76,7 @@ export interface K8SWorker {
 }
 
 export interface CaproverWorker {
+  _id: number;
   name: string;
   solution?: solutionFlavor;
   dedicated?: boolean;
