@@ -71,6 +71,7 @@ export interface K8SWorker {
   rootFsSize: number;
   rentedBy?: number;
   dedicated: boolean;
+  rentedByMe?: boolean;
   certified: boolean;
   selectionDetails?: SelectionDetails;
 }
@@ -80,6 +81,8 @@ export interface CaproverWorker {
   name: string;
   solution?: solutionFlavor;
   dedicated?: boolean;
+  rentedBy?: number;
+  rentedByMe?: boolean;
   certified?: boolean;
   selectionDetails?: SelectionDetails;
   ipv4: boolean;
