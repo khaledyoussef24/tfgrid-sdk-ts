@@ -19,7 +19,6 @@ import type {
   SelectionDetailsFilters,
   SelectionDetailsFiltersValidators,
 } from "../types/nodeSelector";
-import { createCustomToast, ToastType } from "./custom_toast";
 import { normalizeError } from "./helpers";
 
 export interface GetLocationsConfig {
@@ -229,20 +228,18 @@ export async function validateRentContract(
   if (!node || !node.nodeId) {
     throw "Node ID is required.";
   }
+  if (node.dedicated && node.rentedByTwinId === 0 && !node.inDedicatedFarm) return true;
 
   try {
     if (node.dedicated && node.rentedByTwinId === 0 && node.inDedicatedFarm) {
       throw `Node ${node.nodeId} is not rented`;
     }
     if (node.rentContractId !== 0) {
-      const contractInfo = await gridStore.grid.contracts.get({
+      const { state } = await gridStore.grid.contracts.get({
         id: node.rentContractId,
       });
-      if (contractInfo.state.gracePeriod) {
-        createCustomToast(
-          `You can't deploy on node ${node.nodeId}, its rent contract is in grace period.`,
-          ToastType.danger,
-        );
+      if (state.gracePeriod) {
+        throw `You can't deploy on node ${node.nodeId}, its rent contract is in grace period.`;
       }
     }
 
