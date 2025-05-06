@@ -1,4 +1,12 @@
-import { FilterOptions, generateString, GridClient, MachinesModel } from "../src";
+import {
+  Features,
+  FilterOptions,
+  generateRandomHexSeed,
+  generateString,
+  GridClient,
+  MachinesDeleteModel,
+  MachinesModel,
+} from "../src";
 import { config, getClient } from "./client_loader";
 import { log, pingNodes } from "./utils";
 
@@ -44,7 +52,9 @@ async function main() {
     mru: 1, // GB
     sru: 14,
     availableFor: grid3.twinId,
-    farmId: 1,
+    features: [Features.zmachinelight, Features.networklight, Features.mycelium],
+    nodeExclude: [259],
+    farmName: "LiriaFarm",
   };
 
   const nodeId = await getNodeId(grid3, vmQueryOptions);
@@ -68,7 +78,7 @@ async function main() {
         ],
         public_ip: false,
         public_ip6: false,
-        planetary: true,
+        planetary: false,
         mycelium: true,
         cpu: 1,
         memory: 1024,
@@ -91,7 +101,7 @@ async function main() {
         ],
         public_ip: false,
         public_ip6: false,
-        planetary: true,
+        planetary: false,
         mycelium: true,
         cpu: 1,
         memory: 1024,
