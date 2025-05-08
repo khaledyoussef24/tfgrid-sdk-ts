@@ -96,7 +96,11 @@
                 <form-validator v-model="valid">
                   <input-validator
                     :value="address"
-                    :rules="[validators.required('Address is required.'), customStellarValidation]"
+                    :rules="[
+                      validators.required('Address is required.'),
+                      customStellarValidation,
+                      isStellarAddressUsed,
+                    ]"
                     :async-rules="[validators.isValidStellarAddress]"
                     #="{ props }"
                   >
@@ -213,7 +217,6 @@ export default {
     const showDialogue = ref(false);
     const valid = ref(false);
     const address = ref();
-    const isValidAddress = ref(false);
     const isAdding = ref(false);
     const network = process.env.NETWORK || (window as any).env.NETWORK;
     const refreshPublicIPs = ref(false);
@@ -260,13 +263,26 @@ export default {
     }
 
     function customStellarValidation() {
-      isValidAddress.value = StrKey.isValidEd25519PublicKey(address.value);
-      if (!isValidAddress.value) {
+      const isValidAddress = StrKey.isValidEd25519PublicKey(address.value);
+      if (!isValidAddress) {
         return {
           message: "Address is not valid.",
         };
       }
       return undefined;
+    }
+
+    function isStellarAddressUsed() {
+      if (!expanded.value || expanded.value.length === 0 || !farms.value) return undefined;
+      const farmId = expanded.value[0].farmId;
+      const farm_with_same_address = farms.value.find(
+        farm => farm.farmId === farmId && farm.stellarAddress === address.value,
+      );
+      if (farm_with_same_address) {
+        return {
+          message: "Address is already used by this farm.",
+        };
+      }
     }
 
     const copy = (address: string) => {
@@ -355,7 +371,6 @@ export default {
       showDialogue,
       address,
       valid,
-      isValidAddress,
       isAdding,
       farmsCount,
       network,
@@ -365,6 +380,7 @@ export default {
       getUserFarms,
       setStellarAddress,
       customStellarValidation,
+      isStellarAddressUsed,
       getFarmDetails,
       downloadFarmReceipts,
       handleIpAdded,
