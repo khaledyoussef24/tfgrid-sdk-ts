@@ -186,6 +186,7 @@ const rentedByMe = ref(false);
 const certified = ref(false);
 const disks = ref<Disk[]>([]);
 const hasGPU = ref(false);
+
 const rentedBy = computed(() => (rentedByMe.value ? grid.twinId : undefined));
 const rootFilesystemSize = computed(() =>
   flist.value?.name === "Ubuntu-24.04" || flist.value?.name === "Other" ? undefined : 2,
@@ -201,7 +202,6 @@ function addDisk() {
     mountPoint: "/mnt/" + name,
   });
 }
-
 watch(
   [dedicated, rentedByMe],
   ([dedicated, rentedByMe]) => {
@@ -211,7 +211,6 @@ watch(
   },
   { immediate: true },
 );
-
 watch(
   hasGPU,
   hasGPU => {

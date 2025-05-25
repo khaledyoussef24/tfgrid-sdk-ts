@@ -193,8 +193,8 @@ export default {
     const showClearDialogue = ref(false);
     const isRemoving = ref(false);
     const isSaving = ref(false);
-    const isConfigChanged = ref(false);
     const formRef = useFormRef();
+    const isConfigChanged = ref(false);
     const grid = useGrid();
 
     const defualtNodeConfig = ref<PublicConfig>(publicConfigInitializer());
@@ -217,7 +217,6 @@ export default {
         formRef.value?.validate();
       },
     );
-
     async function getPublicConfig() {
       try {
         const node = await grid.client.nodes.get({ id: props.nodeId });
