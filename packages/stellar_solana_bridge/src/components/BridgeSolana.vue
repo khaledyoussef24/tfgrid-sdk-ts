@@ -4,6 +4,7 @@
     style="min-height: 100vh"
   >
     <v-alert
+      v-model="alert"
       transition="fade-transition"
       border="start"
       type="info"

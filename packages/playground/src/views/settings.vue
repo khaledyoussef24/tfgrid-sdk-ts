@@ -236,6 +236,7 @@ import { useGrid } from "../stores";
 import { updateCredentials } from "../utils/credentials";
 
 export default {
+  // eslint-disable-next-line vue/multi-word-component-names
   name: "Settings",
   setup() {
     const DEFAULT_QUERY_TIMEOUT = 10;

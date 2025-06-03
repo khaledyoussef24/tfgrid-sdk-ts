@@ -22,9 +22,9 @@
         location="top"
         text="Show failed deployments"
       >
-        <template #activator="{ props }">
+        <template #activator="{ props: slotProps }">
           <v-icon
-            v-bind="props"
+            v-bind="slotProps"
             class="custom-icon"
             @click="showDialog = true"
           >
@@ -80,7 +80,7 @@
       </v-dialog>
     </v-alert>
 
-    <AccessDeploymentAlert v-if="!hideSSH" />
+    <AccessDeploymentAlert v-if="!hideSsh" />
 
     <div
       class="d-flex flex-column flex-sm-row"
@@ -143,8 +143,8 @@
           :text="item.flist"
           location="bottom right"
         >
-          <template #activator="{ props }">
-            <p v-bind="props">
+          <template #activator="{ props: slotProps }">
+            <p v-bind="slotProps">
               {{ renameFlist(item.flist) }}
             </p>
           </template>
@@ -264,7 +264,7 @@ const props = defineProps<{
   projectTitle: string;
   modelValue: any[];
   deleting: boolean;
-  hideSSH?: boolean;
+  hideSsh?: boolean;
 }>();
 defineEmits<{ (event: "update:model-value", value: any[]): void }>();
 
