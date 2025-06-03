@@ -11,8 +11,9 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
   },
   "dependencies": {
-    "@mdi/font": "^7.2.96",
-    "@sentry/vue": "^8.19.0",
+    "@mdi/font": "^7.4.47",
+    "@sentry/vue": "^9.15.0",
+    "@stellar/stellar-sdk": "^13.3.0",
     "@threefold/graphql_client": "2.8.0",
     "@threefold/grid_client": "2.8.0",
     "@threefold/gridproxy_client": "2.8.0",

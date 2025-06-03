@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@threefold/types": "2.8.0",
-    "ts-mixer": "^6.0.2"
+    "ts-mixer": "^6.0.4"
   },
   "devDependencies": {
     "typescript": "^5.8.3"
