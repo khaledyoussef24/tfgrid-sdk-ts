@@ -63,6 +63,14 @@ On **Pull Request**, and **Push** to development branch that has changes in the 
 
 On **Release** published: It will build and push a new docker image based on project release tag.
 
+### [Playground Selenium](/.github/workflows/playground_selenium.yaml)
+
+Runs daily and can also be triggered manually. When triggered manually you can
+select one of `dev`, `qa`, `test` or `main` environments. If `dev` is selected
+the workflow builds and serves the dashboard locally before running the tests;
+otherwise it runs the tests against the URLs baked into the repository for the
+selected network.
+
 ## Threefold UI
 
 ### [Build](/.github/workflows/threefold_ui_build.yaml)
