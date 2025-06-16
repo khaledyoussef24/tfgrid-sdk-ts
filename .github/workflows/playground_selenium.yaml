@@ -2,12 +2,25 @@ name: Playground Selenium Tests
 
 on:
   workflow_dispatch:
+    inputs:
+      env:
+        type: choice
+        description: "Target environment"
+        required: true
+        default: "dev"
+        options:
+          - "dev"
+          - "qa"
+          - "test"
+          - "main"
   schedule:
     - cron: "0 6 * * *"
 
 jobs:
   selenium-run:
     runs-on: ubuntu-latest
+    env:
+      ENV: ${{ github.event.inputs.env || 'dev' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,11 +38,16 @@ jobs:
           node-version: 22.15
       - name: Yarn install
         run: yarn install
+      - name: Set environment
+        run: sed -i "s/^net = .*/net = $ENV/" packages/playground/tests/frontend_selenium/Config.ini
       - name: Lerna Build
+        if: ${{ env.ENV == 'dev' }}
         run: yarn lerna run build
       - name: Yarn Serve
+        if: ${{ env.ENV == 'dev' }}
         run: make run project=playground &
       - name: Wait for localhost
+        if: ${{ env.ENV == 'dev' }}
         run: sleep 60
       - name: Run tests
         working-directory: ./packages/playground/tests/frontend_selenium
@@ -38,4 +56,10 @@ jobs:
           TFCHAIN_NODE_MNEMONICS: ${{ secrets.TFCHAIN_NODE_MNEMONICS }}
           STELLAR_ADDRESS: ${{ secrets.STELLAR_ADDRESS }}
           EMAIL: ${{ secrets.EMAIL }}
-        run: python -m pytest -v
+        run: python -m pytest -v --html=report.html
+      - name: Upload test report
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-report-${{ env.ENV }}
+          path: packages/playground/tests/frontend_selenium/report.html
