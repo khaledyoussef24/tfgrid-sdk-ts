@@ -2,15 +2,39 @@ name: Playground Selenium Tests
 
 on:
   workflow_dispatch:
+    inputs:
+      network:
+        type: choice
+        description: "Target network"
+        required: true
+        default: "dev"
+        options:
+          - dev
+          - qa
+          - test
+          - main
+      branch:
+        description: "Branch to checkout"
+        required: false
+        default: ""
+      build_locally:
+        type: boolean
+        description: "Build dashboard locally"
+        required: true
+        default: true
   schedule:
     - cron: "0 6 * * *"
 
 jobs:
   selenium-run:
     runs-on: ubuntu-latest
+    env:
+      NETWORK: ${{ github.event.inputs.network || 'dev' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
       - name: Setting up Python
         uses: actions/setup-python@v5
         with:
@@ -20,17 +44,28 @@ jobs:
       - name: Installing all necessary packages
         run: pip install -r  packages/playground/tests/frontend_selenium/requirements.txt
       - name: Node install
+        if: ${{ github.event.inputs.build_locally != 'false' }}
         uses: actions/setup-node@v4
         with:
           node-version: 22.15
       - name: Yarn install
+        if: ${{ github.event.inputs.build_locally != 'false' }}
         run: yarn install
       - name: Lerna Build
+        if: ${{ github.event.inputs.build_locally != 'false' }}
         run: yarn lerna run build
       - name: Yarn Serve
+        if: ${{ github.event.inputs.build_locally != 'false' }}
         run: make run project=playground &
       - name: Wait for localhost
+        if: ${{ github.event.inputs.build_locally != 'false' }}
         run: sleep 60
+      - name: Configure network for deployed site
+        if: ${{ github.event.inputs.build_locally == 'false' }}
+        run: sed -i "s/^net = .*/net = ${NETWORK}/" packages/playground/tests/frontend_selenium/Config.ini
+      - name: Configure network for local build
+        if: ${{ github.event.inputs.build_locally != 'false' }}
+        run: sed -i 's/^net = .*/net = local/' packages/playground/tests/frontend_selenium/Config.ini
       - name: Run tests
         working-directory: ./packages/playground/tests/frontend_selenium
         env:
